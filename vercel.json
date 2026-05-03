@@ -1,0 +1,25 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options",        "value": "DENY" },
+        { "key": "X-XSS-Protection",       "value": "1; mode=block" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/",                     "destination": "/index.html" },
+    { "source": "/login",                "destination": "/login.html" },
+    { "source": "/dashboard",            "destination": "/dashboard.html" },
+    { "source": "/transfer",             "destination": "/transfer.html" },
+    { "source": "/activity",             "destination": "/activity.html" },
+    { "source": "/admin",                "destination": "/admin-dashboard.html" },
+    { "source": "/admin/customers",      "destination": "/admin-customers.html" },
+    { "source": "/admin/edit-customer",  "destination": "/admin-edit-customer.html" },
+    { "source": "/admin/transactions",   "destination": "/admin-transactions.html" }
+  ]
+}

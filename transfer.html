@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transfer Money | Bank of America Online Banking</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #ebebeb; }
+    .bank-header { background: var(--navy); color: #fff; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .bh-top { background: #111; padding: 4px 0; font-size: 11px; color: #aaa; }
+    .bh-top .container { display: flex; justify-content: space-between; align-items: center; }
+    .bh-top a { color: #bbb; font-size: 11px; padding: 0 10px; border-right: 1px solid #333; }
+    .bh-main .container { display: flex; align-items: center; justify-content: space-between; height: 58px; }
+    .bh-logo { display: flex; align-items: center; gap: 10px; text-decoration: none !important; }
+    .bh-logo-box { background: var(--red); width: 36px; height: 36px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: #fff; font-family: var(--font-serif); }
+    .bh-logo-text { color: #fff; line-height: 1.2; }
+    .bh-logo-text strong { display: block; font-size: 15px; font-weight: 700; }
+    .bh-logo-text span { font-size: 10px; color: rgba(255,255,255,0.55); }
+    .bh-user { display: flex; align-items: center; gap: 14px; }
+    .bh-user span { font-size: 13px; color: rgba(255,255,255,0.85); }
+    .btn-so { background: var(--red); color: #fff; border: none; padding: 6px 14px; border-radius: 3px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--font-body); }
+    .bh-nav { background: #002040; border-top: 1px solid rgba(255,255,255,0.08); }
+    .bh-nav .container { display: flex; }
+    .bh-nav a { color: rgba(255,255,255,0.78); font-size: 13px; font-weight: 600; padding: 11px 16px; display: block; border-bottom: 3px solid transparent; transition: all 0.14s; text-decoration: none !important; }
+    .bh-nav a:hover, .bh-nav a.active { color: #fff; background: rgba(255,255,255,0.07); border-bottom-color: var(--red); }
+
+    .content { padding: 28px 0 60px; }
+    .page-wrap { max-width: 680px; margin: 0 auto; }
+
+    /* ── STEP indicators ─── */
+    .steps {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 24px;
+      animation: fadeUp 0.35s ease both;
+    }
+    .step { display: flex; align-items: center; gap: 8px; flex: 1; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      border: 2px solid #ccc; color: #ccc; background: #fff;
+      flex-shrink: 0; transition: all 0.3s;
+    }
+    .step-num.done   { background: #2e7d32; border-color: #2e7d32; color: #fff; }
+    .step-num.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+    .step-label { font-size: 12px; color: #aaa; font-weight: 600; }
+    .step-label.active { color: var(--navy); }
+    .step-line { flex: 1; height: 2px; background: #ddd; margin: 0 8px; }
+    .step-line.done { background: #2e7d32; }
+
+    /* ── Transfer form ─── */
+    .transfer-card { background: #fff; border: 1px solid #ddd; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); animation: fadeUp 0.4s ease both; }
+    .tc-head { background: var(--navy); color: #fff; padding: 18px 22px; }
+    .tc-head h2 { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+    .tc-head p { font-size: 13px; color: rgba(255,255,255,0.65); margin: 0; }
+    .tc-body { padding: 28px 24px; }
+
+    .from-box {
+      background: #f0f5ff; border: 2px solid var(--navy); border-radius: var(--radius-lg);
+      padding: 16px 18px; margin-bottom: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .from-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin-bottom: 3px; }
+    .from-name { font-size: 16px; font-weight: 700; color: var(--navy); }
+    .from-num  { font-size: 12px; color: #888; }
+    .from-bal-label { font-size: 10px; color: #888; text-align: right; }
+    .from-bal-amt   { font-size: 20px; font-weight: 700; color: #1a7a1a; text-align: right; }
+
+    .info-pill {
+      background: #e3f2fd; border: 1px solid #90caf9; border-radius: var(--radius);
+      padding: 10px 14px; font-size: 12.5px; color: #1565c0;
+      display: flex; gap: 8px; align-items: flex-start; margin-bottom: 22px;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .amount-wrap { position: relative; }
+    .amount-wrap span { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #777; font-weight: 700; }
+    .amount-input { padding-left: 28px !important; font-size: 22px !important; font-weight: 700 !important; color: var(--navy) !important; }
+    .form-error-msg { color: var(--red); font-size: 12px; margin-top: 4px; display: none; }
+    .btn-row { display: flex; gap: 12px; align-items: center; padding-top: 20px; border-top: 1px solid #eee; margin-top: 4px; }
+    .btn-continue { flex: 1; background: var(--red); color: #fff; border: none; padding: 14px; border-radius: var(--radius); font-size: 16px; font-weight: 700; cursor: pointer; font-family: var(--font-body); transition: background 0.2s; }
+    .btn-continue:hover { background: var(--dark-red); }
+    .btn-cancel { color: var(--link-blue); font-size: 14px; text-decoration: none !important; padding: 12px 16px; border: 1px solid #ccc; border-radius: var(--radius); }
+    .btn-cancel:hover { background: #f5f5f5; }
+
+    /* ── Confirm page ─── */
+    .confirm-page { display: none; }
+    .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
+    .summary-table td { padding: 11px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; vertical-align: middle; }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table td:first-child { color: #999; width: 44%; font-size: 13px; }
+    .summary-table td:last-child { font-weight: 700; color: #222; text-align: right; }
+    .summary-table .amt-row td:last-child { font-size: 22px; color: var(--red); }
+    .warn-box { background: #fff8e1; border: 1px solid #ffe082; border-radius: var(--radius); padding: 12px 14px; font-size: 12.5px; color: #7a5c00; display: flex; gap: 8px; margin-bottom: 22px; }
+    .pin-section { background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: var(--radius-lg); padding: 22px; text-align: center; margin-bottom: 20px; }
+    .pin-section h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 0 0 6px; }
+    .pin-section p { font-size: 13px; color: #888; margin: 0 0 18px; }
+    .pin-row { display: flex; gap: 10px; justify-content: center; }
+    .pin-d { width: 54px; height: 62px; border: 2px solid #ccc; border-radius: var(--radius-lg); text-align: center; font-size: 28px; font-weight: 700; color: var(--navy); background: #fff; transition: border-color 0.15s; caret-color: transparent; }
+    .pin-d:focus { outline: none; border-color: var(--mid-blue); box-shadow: 0 0 0 3px rgba(0,119,192,0.18); }
+    .pin-d.filled { border-color: var(--navy); }
+    .pin-hint { font-size: 11.5px; color: #aaa; margin-top: 8px; }
+    .pin-error { font-size: 13px; color: var(--red); margin-top: 8px; display: none; }
+
+    /* ── Success page ─── */
+    .success-page { display: none; }
+    .success-banner {
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+      color: #fff; border-radius: var(--radius-lg);
+      padding: 36px; text-align: center; margin-bottom: 20px;
+      position: relative; overflow: hidden; animation: fadeUp 0.5s ease both;
+    }
+    .success-banner::before { content:''; position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.06); }
+    .success-icon { width: 72px; height: 72px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 16px; }
+    .success-banner h2 { font-size: 26px; font-weight: 700; margin: 0 0 8px; }
+    .success-banner .s-amount { font-size: 44px; font-weight: 700; margin: 12px 0 6px; font-family: var(--font-serif); }
+    .success-banner p { font-size: 14px; color: rgba(255,255,255,0.78); }
+    .receipt-card { background: #fff; border: 1px solid #ddd; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 16px; animation: fadeUp 0.5s 0.1s ease both; }
+    .receipt-head { background: var(--navy); color: #fff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .receipt-head h3 { font-size: 15px; font-weight: 700; margin: 0; }
+    .ref-chip { font-size: 11px; font-family: monospace; background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 3px; }
+    .receipt-body { padding: 22px; }
+    .receipt-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px; }
+    .receipt-row:last-child { border-bottom: none; }
+    .receipt-row .rl { color: #999; font-size: 13px; }
+    .receipt-row .rv { font-weight: 700; color: #222; text-align: right; }
+    .receipt-total { background: #f8f9ff; border: 1px solid #dde8ff; border-radius: var(--radius-lg); padding: 18px; text-align: center; margin-top: 16px; }
+    .receipt-total .rt-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+    .receipt-total .rt-amount { font-size: 34px; font-weight: 700; color: var(--navy); font-family: var(--font-serif); }
+    .receipt-total .rt-bal { font-size: 13px; color: #1a7a1a; margin-top: 8px; }
+    .act-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; animation: fadeUp 0.5s 0.2s ease both; }
+    .act-row a, .act-row button { flex: 1; text-align: center; padding: 13px; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font-body); border: none; }
+
+    /* Confetti */
+    .confetti-container { position: fixed; top: 0; left: 0; right: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .cdot { position: absolute; border-radius: 2px; animation: cfDrop 2.5s ease-in forwards; }
+    @keyframes cfDrop { 0%{transform:translateY(-30px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+
+    @media print {
+      .bank-header, .steps, .act-row, .btn-so { display: none !important; }
+      body { background: #fff; }
+    }
+    @media (max-width: 680px) { .grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="bank-header">
+  <div class="bh-top">
+    <div class="container">
+      <span>Online Banking</span>
+      <div><a href="#">Help</a><a href="#">Security Center</a><a href="#">Contact</a></div>
+    </div>
+  </div>
+  <div class="bh-main">
+    <div class="container">
+      <a href="dashboard.html" class="bh-logo">
+        <div class="bh-logo-box">B</div>
+        <div class="bh-logo-text"><strong>Bank of America</strong><span>Online Banking</span></div>
+      </a>
+      <div class="bh-user">
+        <span id="welcome-msg"></span>
+        <button class="btn-so" onclick="handleLogout()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+  <div class="bh-nav">
+    <div class="container">
+      <a href="dashboard.html">Accounts</a>
+      <a href="transfer.html" class="active">Transfer &amp; Pay</a>
+      <a href="activity.html">Activity</a>
+      <a href="dashboard.html#security-section">Security</a>
+      <a href="#">Messages</a>
+    </div>
+  </div>
+</div>
+
+<div class="confetti-container" id="confetti"></div>
+
+<main class="content">
+  <div class="container">
+    <div class="page-wrap">
+
+      <!-- Back link -->
+      <div style="margin-bottom:14px;"><a href="dashboard.html" style="font-size:13px;color:var(--link-blue);">← Back to Accounts</a></div>
+
+      <!-- Steps -->
+      <div class="steps">
+        <div class="step">
+          <div class="step-num active" id="s1">1</div>
+          <div class="step-label active" id="sl1">Transfer Details</div>
+        </div>
+        <div class="step-line" id="line1"></div>
+        <div class="step">
+          <div class="step-num" id="s2">2</div>
+          <div class="step-label" id="sl2">Confirm &amp; PIN</div>
+        </div>
+        <div class="step-line" id="line2"></div>
+        <div class="step">
+          <div class="step-num" id="s3">3</div>
+          <div class="step-label" id="sl3">Success</div>
+        </div>
+      </div>
+
+      <!-- ── STEP 1: Transfer Form ────────────────────── -->
+      <div class="transfer-page" id="step-transfer">
+        <div class="transfer-card">
+          <div class="tc-head">
+            <h2>💸 Transfer Money</h2>
+            <p>Send money to any account — secure, fast, and easy.</p>
+          </div>
+          <div class="tc-body">
+            <div class="from-box">
+              <div>
+                <div class="from-label">From Account</div>
+                <div class="from-name" id="from-acct-name">—</div>
+                <div class="from-num" id="from-acct-num">—</div>
+              </div>
+              <div>
+                <div class="from-bal-label">Available Balance</div>
+                <div class="from-bal-amt" id="from-bal">—</div>
+              </div>
+            </div>
+            <div class="info-pill">ℹ️ Transfers sent before 5:00 PM ET on a business day will be processed the same day.</div>
+            <div id="tx-error" class="alert alert-danger" style="display:none;"></div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Recipient Full Name *</label>
+                <input class="form-control" type="text" id="r-name" placeholder="e.g. John Smith">
+                <div class="form-error-msg" id="e-rname">Please enter recipient name.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Recipient Account Number *</label>
+                <input class="form-control" type="text" id="r-account" placeholder="e.g. 483920174650">
+                <div class="form-error-msg" id="e-racct">Please enter account number.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount *</label>
+              <div class="amount-wrap">
+                <span>$</span>
+                <input class="form-control amount-input" type="number" id="tx-amount" placeholder="0.00" min="0.01" step="0.01">
+              </div>
+              <div class="form-error-msg" id="e-amount">Please enter a valid amount.</div>
+              <div class="form-hint">Maximum: $50,000.00 per transaction</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Memo (Optional)</label>
+              <input class="form-control" type="text" id="tx-memo" placeholder="What's this for?">
+            </div>
+            <div class="btn-row">
+              <button class="btn-continue" onclick="goToConfirm()">Continue →</button>
+              <a href="dashboard.html" class="btn-cancel">Cancel</a>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:#aaa;">🔒 256-bit encrypted · FDIC insured · Fraud protected 24/7</div>
+      </div>
+
+      <!-- ── STEP 2: Confirm + PIN ────────────────────── -->
+      <div class="confirm-page" id="step-confirm">
+        <div class="transfer-card">
+          <div class="tc-head">
+            <h2>🔐 Confirm Your Transfer</h2>
+            <p>Review the details and enter your 4-digit PIN to authorize.</p>
+          </div>
+          <div class="tc-body">
+            <table class="summary-table">
+              <tr><td>From Account</td><td id="sum-from">—</td></tr>
+              <tr><td>Recipient</td><td id="sum-name">—</td></tr>
+              <tr><td>To Account</td><td id="sum-acct" style="font-family:monospace;letter-spacing:1px;">—</td></tr>
+              <tr><td>Memo</td><td id="sum-memo" style="font-style:italic;color:#888;">—</td></tr>
+              <tr><td>Transfer Date</td><td id="sum-date">—</td></tr>
+              <tr class="amt-row"><td>Amount</td><td id="sum-amount">—</td></tr>
+            </table>
+            <div class="warn-box">⚠️ Once confirmed, this transfer cannot be reversed. Verify the recipient account number before proceeding.</div>
+            <div class="pin-section">
+              <h3>🔒 Enter Your 4-Digit PIN</h3>
+              <p>For your security, enter your banking PIN to authorize this transfer.</p>
+              <div class="pin-row">
+                <input class="pin-d" type="password" maxlength="1" inputmode="numeric" id="p0">
+                <input class="pin-d" type="password" maxlength="1" inputmode="numeric" id="p1">
+                <input class="pin-d" type="password" maxlength="1" inputmode="numeric" id="p2">
+                <input class="pin-d" type="password" maxlength="1" inputmode="numeric" id="p3">
+              </div>
+              <div class="pin-hint">Use your banking PIN, not your online password.</div>
+              <div class="pin-error" id="pin-error">Incorrect PIN. Please try again.</div>
+            </div>
+            <div class="btn-row">
+              <a href="#" class="btn-cancel" onclick="backToForm()">← Back</a>
+              <button class="btn-continue" id="auth-btn" onclick="processTransfer()">Authorize Transfer →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: Success ─────────────────────────── -->
+      <div class="success-page" id="step-success">
+        <div class="success-banner">
+          <div class="success-icon">✓</div>
+          <h2>Transfer Successful!</h2>
+          <div class="s-amount" id="suc-amount">$0.00</div>
+          <p>Your money is on its way to <strong id="suc-name">—</strong></p>
+          <div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.55);" id="suc-time"></div>
+        </div>
+        <div class="receipt-card">
+          <div class="receipt-head">
+            <h3>📄 Transfer Receipt</h3>
+            <span class="ref-chip" id="suc-ref">—</span>
+          </div>
+          <div class="receipt-body">
+            <div class="receipt-row"><span class="rl">Reference Number</span><span class="rv" id="r-ref" style="font-family:monospace;">—</span></div>
+            <div class="receipt-row"><span class="rl">Transfer Date &amp; Time</span><span class="rv" id="r-date">—</span></div>
+            <div class="receipt-row"><span class="rl">From Account</span><span class="rv" id="r-from">—</span></div>
+            <div class="receipt-row"><span class="rl">To Recipient</span><span class="rv" id="r-to">—</span></div>
+            <div class="receipt-row"><span class="rl">Recipient Account</span><span class="rv" id="r-racct" style="font-family:monospace;">—</span></div>
+            <div class="receipt-row" id="r-memo-row"><span class="rl">Memo</span><span class="rv" id="r-memo" style="font-style:italic;color:#888;">—</span></div>
+            <div class="receipt-row"><span class="rl">Transfer Type</span><span class="rv">Online Transfer (ACH)</span></div>
+            <div class="receipt-row"><span class="rl">Status</span><span class="rv" style="color:#2e7d32;">✓ Completed</span></div>
+            <div class="receipt-total">
+              <div class="rt-label">Amount Transferred</div>
+              <div class="rt-amount" id="r-amount">$0.00</div>
+              <div class="rt-bal">New Available Balance: <strong id="r-newbal">—</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="act-row">
+          <a href="dashboard.html" style="background:var(--mid-blue);color:#fff;text-decoration:none;display:block;">← Back to Accounts</a>
+          <a href="transfer.html" style="background:#fff;color:var(--mid-blue);border:2px solid var(--mid-blue);text-decoration:none;display:block;">Make Another Transfer</a>
+          <button onclick="window.print()" style="background:#fff;color:#555;border:2px solid #ccc;">🖨️ Print Receipt</button>
+        </div>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:#aaa;" id="r-saveref"></div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer style="background:#1c1c1c;color:#aaa;font-size:12px;padding:20px;text-align:center;margin-top:0;">
+  <p>Bank of America, N.A. Member FDIC. Equal Housing Lender | © 2024 Bank of America Corporation. All rights reserved.</p>
+</footer>
+
+<script src="js/shared.js"></script>
+<script>
+  if (!Auth.requireCustomer()) {}
+
+  const authUser = Auth.user();
+  const user = DB.fullUser();
+  document.getElementById('welcome-msg').textContent = `Welcome, ${authUser.name}`;
+
+  // Populate from-account
+  document.getElementById('from-acct-name').textContent = user.accountType;
+  document.getElementById('from-acct-num').textContent  = Fmt.maskAccount(user.accountNumber);
+  document.getElementById('from-bal').textContent = Fmt.money(user.availableBalance);
+
+  let pendingTransfer = {};
+
+  // ── Step navigation ──────────────────────────────────────
+  function showStep(n) {
+    document.getElementById('step-transfer').style.display = n===1 ? 'block' : 'none';
+    document.getElementById('step-confirm').style.display  = n===2 ? 'block' : 'none';
+    document.getElementById('step-success').style.display  = n===3 ? 'block' : 'none';
+    for (let i=1;i<=3;i++) {
+      const num = document.getElementById(`s${i}`);
+      const lbl = document.getElementById(`sl${i}`);
+      num.className = `step-num ${i < n ? 'done' : i===n ? 'active' : ''}`;
+      lbl.className = `step-label ${i===n ? 'active' : ''}`;
+      if (i < 3) document.getElementById(`line${i}`).className = `step-line ${i < n ? 'done' : ''}`;
+    }
+  }
+
+  function goToConfirm() {
+    const rName   = document.getElementById('r-name').value.trim();
+    const rAcct   = document.getElementById('r-account').value.trim();
+    const amount  = parseFloat(document.getElementById('tx-amount').value);
+    const memo    = document.getElementById('tx-memo').value.trim();
+    let valid = true;
+    const errEl = document.getElementById('tx-error');
+    errEl.style.display = 'none';
+
+    if (!rName)           { document.getElementById('e-rname').style.display='block'; valid=false; } else { document.getElementById('e-rname').style.display='none'; }
+    if (!rAcct)           { document.getElementById('e-racct').style.display='block'; valid=false; } else { document.getElementById('e-racct').style.display='none'; }
+    if (!amount || amount<=0) { document.getElementById('e-amount').style.display='block'; valid=false; } else { document.getElementById('e-amount').style.display='none'; }
+    if (!valid) return;
+
+    const freshUser = DB.getUserById(user.id);
+    if (amount > freshUser.availableBalance) {
+      errEl.textContent = `Insufficient funds. Available balance: ${Fmt.money(freshUser.availableBalance)}`;
+      errEl.style.display = 'flex'; return;
+    }
+    if (amount > 50000) {
+      errEl.textContent = 'Maximum transfer amount is $50,000 per transaction.';
+      errEl.style.display = 'flex'; return;
+    }
+
+    pendingTransfer = { recipientName: rName, recipientAccount: rAcct, amount, memo };
+
+    document.getElementById('sum-from').textContent   = `${user.accountType} (${Fmt.maskAccount(user.accountNumber)})`;
+    document.getElementById('sum-name').textContent   = rName;
+    document.getElementById('sum-acct').textContent   = rAcct;
+    document.getElementById('sum-memo').textContent   = memo || '—';
+    document.getElementById('sum-memo').style.display = memo ? '' : 'none';
+    document.getElementById('sum-date').textContent   = new Date().toLocaleString('en-US',{month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) + ' ET';
+    document.getElementById('sum-amount').textContent = Fmt.money(amount);
+
+    showStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => document.getElementById('p0').focus(), 100);
+  }
+
+  function backToForm() {
+    showStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // PIN inputs
+  ['p0','p1','p2','p3'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => {
+      el.value = el.value.replace(/\D/g,'').slice(-1);
+      el.classList.toggle('filled', !!el.value);
+      if (el.value && i < 3) document.getElementById(`p${i+1}`).focus();
+    });
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !el.value && i > 0) {
+        const prev = document.getElementById(`p${i-1}`);
+        prev.value = ''; prev.classList.remove('filled'); prev.focus();
+      }
+    });
+  });
+
+  function processTransfer() {
+    const pin = ['p0','p1','p2','p3'].map(id => document.getElementById(id).value).join('');
+    const pinErr = document.getElementById('pin-error');
+    pinErr.style.display = 'none';
+    const btn = document.getElementById('auth-btn');
+
+    if (pin.length < 4) { pinErr.style.display = 'block'; pinErr.textContent = 'Please enter your 4-digit PIN.'; return; }
+
+    const freshUser = DB.getUserById(user.id);
+    if (pin !== freshUser.pin) {
+      pinErr.style.display = 'block';
+      ['p0','p1','p2','p3'].forEach(id => { const el = document.getElementById(id); el.value=''; el.classList.remove('filled'); });
+      document.getElementById('p0').focus();
+      return;
+    }
+
+    btn.textContent = 'Processing…'; btn.disabled = true;
+
+    setTimeout(() => {
+      const { recipientName, recipientAccount, amount, memo } = pendingTransfer;
+      const newBal = freshUser.balance - amount;
+      const ref = 'TRF' + Math.random().toString(36).substr(2,8).toUpperCase();
+      const now = new Date().toISOString();
+
+      // Update user balance
+      DB.updateUser(user.id, { balance: newBal, availableBalance: newBal });
+
+      // Add transaction
+      DB.addTransaction(user.id, {
+        id: Date.now(), type: 'debit',
+        description: 'Online Transfer Sent - ' + recipientName,
+        category: 'transfer', counterparty: recipientName,
+        counterparty_account: recipientAccount,
+        amount, balanceAfter: newBal, ref, status: 'completed',
+        memo, date: now
+      });
+
+      // Populate success
+      document.getElementById('suc-amount').textContent = Fmt.money(amount);
+      document.getElementById('suc-name').textContent   = recipientName;
+      document.getElementById('suc-time').textContent   = 'Processed on ' + new Date().toLocaleString('en-US',{month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) + ' ET';
+      document.getElementById('suc-ref').textContent    = ref;
+      document.getElementById('r-ref').textContent      = ref;
+      document.getElementById('r-date').textContent     = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) + ' ET';
+      document.getElementById('r-from').textContent     = freshUser.accountType + ' (' + Fmt.maskAccount(freshUser.accountNumber) + ')';
+      document.getElementById('r-to').textContent       = recipientName;
+      document.getElementById('r-racct').textContent    = '••••' + String(recipientAccount).slice(-4);
+      if (memo) { document.getElementById('r-memo').textContent = memo; } else { document.getElementById('r-memo-row').style.display='none'; }
+      document.getElementById('r-amount').textContent   = Fmt.money(amount);
+      document.getElementById('r-newbal').textContent   = Fmt.money(newBal);
+      document.getElementById('r-saveref').textContent  = `Please save this receipt. Reference: ${ref}`;
+
+      showStep(3);
+      launchConfetti();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 900);
+  }
+
+  function launchConfetti() {
+    const colors = ['#E31837','#002855','#0077C0','#FFD700','#2e7d32','#fff'];
+    const c = document.getElementById('confetti');
+    for (let i=0;i<70;i++) {
+      const d = document.createElement('div');
+      d.className = 'cdot';
+      const size = 6 + Math.random()*8;
+      d.style.cssText = `left:${Math.random()*100}%;width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*1.2}s;animation-duration:${1.8+Math.random()*1.4}s;border-radius:${Math.random()>.5?'50%':'2px'};`;
+      c.appendChild(d);
+    }
+    setTimeout(() => c.innerHTML='', 4000);
+  }
+
+  showStep(1);
+</script>
+</body>
+</html>

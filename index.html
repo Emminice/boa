@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank of America - Banking, Credit Cards, Loans and Merrill Investing</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Hero ─────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(130deg, #001f4d 0%, #002e70 55%, #003d96 100%);
+      min-height: 440px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; right: -80px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(227,24,55,0.15) 0%, transparent 70%);
+    }
+    .hero-inner {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      padding: 60px 0;
+    }
+    .hero-content { animation: fadeUp 0.6s ease both; }
+    .hero-eyebrow {
+      display: inline-block;
+      background: var(--red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 2px;
+      margin-bottom: 18px;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: 40px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.22;
+      margin-bottom: 18px;
+      max-width: 520px;
+    }
+    .hero-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.65;
+      margin-bottom: 30px;
+      max-width: 480px;
+    }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Login widget */
+    .hero-login {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero-login-head {
+      background: var(--navy);
+      color: #fff;
+      padding: 18px 24px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .hero-login-body { padding: 24px; }
+    .login-field { margin-bottom: 14px; }
+    .login-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #444;
+      margin-bottom: 5px;
+    }
+    .login-field input {
+      width: 100%;
+      border: 1.5px solid #bbb;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 15px;
+      font-family: var(--font-body);
+      transition: border-color 0.15s;
+    }
+    .login-field input:focus { outline: none; border-color: var(--mid-blue); box-shadow: 0 0 0 3px rgba(0,119,192,0.18); }
+    .login-remember { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #555; margin-bottom: 16px; }
+    .login-remember input { width: 15px; height: 15px; accent-color: var(--red); }
+    .login-links { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; }
+    .login-links a { color: var(--link-blue); }
+    .hero-login-foot {
+      background: #f8f8f8;
+      border-top: 1px solid #e8e8e8;
+      padding: 16px 24px;
+      text-align: center;
+    }
+    .hero-login-foot p { font-size: 12.5px; color: #666; margin-bottom: 10px; }
+    .error-banner {
+      background: #fdecea;
+      border: 1px solid #ef9a9a;
+      border-left: 4px solid var(--red);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #b71c1c;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    /* Quick links band */
+    .quick-band { background: #f0f0f0; border-bottom: 1px solid #ddd; }
+    .quick-band-inner {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+    }
+    .quick-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 12px;
+      border-right: 1px solid #ddd;
+      text-align: center;
+      color: var(--navy);
+      text-decoration: none;
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+    .quick-item:last-child { border-right: none; }
+    .quick-item:hover { background: #e5e5e5; text-decoration: none; }
+    .quick-icon { font-size: 30px; margin-bottom: 8px; }
+    .quick-label { font-size: 13px; font-weight: 700; }
+    .quick-sub { font-size: 11px; color: #888; margin-top: 2px; }
+
+    /* Products section */
+    .section { padding: 56px 0; }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .section-sub { font-size: 15px; color: #666; margin-bottom: 36px; }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+    }
+    .product-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: var(--radius-lg);
+      padding: 26px 22px;
+      position: relative;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: default;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--red);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .product-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .product-icon { font-size: 34px; margin-bottom: 14px; }
+    .product-name { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .product-desc { font-size: 13px; color: #666; line-height: 1.55; margin-bottom: 18px; }
+    .product-link { font-size: 13px; font-weight: 700; color: var(--link-blue); }
+    .product-link:hover { text-decoration: underline; }
+
+    /* Rates banner */
+    .rates-banner {
+      background: linear-gradient(135deg, var(--navy) 0%, #004080 100%);
+      color: #fff;
+      padding: 48px 0;
+    }
+    .rates-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .rates-title {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .rates-sub { font-size: 14px; color: rgba(255,255,255,0.72); line-height: 1.65; margin-bottom: 24px; }
+    .benefits-list { list-style: none; }
+    .benefits-list li {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 14px;
+      color: rgba(255,255,255,0.88);
+      align-items: flex-start;
+    }
+    .benefits-list li:last-child { border-bottom: none; }
+    .check-icon { color: #5de85d; font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+    .stats-box {
+      background: rgba(255,255,255,0.07);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .stat-num { font-size: 44px; font-weight: 700; margin-bottom: 6px; font-family: var(--font-serif); }
+    .stat-label { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 28px; }
+
+    /* News */
+    .news-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 32px; }
+    .news-card {
+      border: 1px solid #ddd;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: #fff;
+      transition: box-shadow 0.2s;
+      cursor: default;
+    }
+    .news-card:hover { box-shadow: var(--shadow-md); }
+    .news-thumb {
+      height: 148px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px;
+    }
+    .news-thumb-1 { background: linear-gradient(135deg,#001f4d,#003087); }
+    .news-thumb-2 { background: linear-gradient(135deg,#1a1a2e,#16213e); }
+    .news-thumb-3 { background: linear-gradient(135deg,#1b5e20,#2e7d32); }
+    .news-body { padding: 18px; }
+    .news-tag {
+      display: inline-block;
+      background: #e3f2fd;
+      color: var(--mid-blue);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+    .news-title { font-size: 14px; font-weight: 700; color: #222; line-height: 1.4; margin-bottom: 8px; }
+    .news-desc { font-size: 12.5px; color: #777; line-height: 1.55; }
+
+    /* Connect strip */
+    .connect-strip { background: #f5f5f5; border-top: 1px solid #e0e0e0; padding: 36px 0; }
+    .connect-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; text-align: center; }
+    .connect-icon { font-size: 34px; margin-bottom: 10px; }
+    .connect-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .connect-sub { font-size: 12px; color: #888; }
+    .connect-link { display: block; margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--link-blue); }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-login { display: none; }
+      .products-grid { grid-template-columns: 1fr 1fr; }
+      .news-grid, .connect-grid, .quick-band-inner { grid-template-columns: 1fr 1fr; }
+      .rates-inner { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 580px) {
+      .products-grid, .news-grid, .connect-grid, .quick-band-inner { grid-template-columns: 1fr; }
+      .hero-title { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="page-header"></div>
+
+<!-- ── HERO ──────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <span class="hero-eyebrow">Better Money Habits®</span>
+        <h1 class="hero-title">Your financial goals matter to us</h1>
+        <p class="hero-sub">We can help you achieve them through financial education, tools, and programs designed to make communities stronger and families more financially secure.</p>
+        <div class="hero-btns">
+          <a href="#" class="btn btn-red btn-lg">Open an Account</a>
+          <a href="#" class="btn btn-outline-white btn-lg">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Inline login widget -->
+      <div class="hero-login">
+        <div class="hero-login-head">Sign In to Online Banking</div>
+        <div class="hero-login-body">
+          <div class="error-banner" id="hero-error">The information entered doesn't match our records. Please try again.</div>
+          <div class="login-field">
+            <label>Online ID (Email)</label>
+            <input type="email" id="hero-email" placeholder="Enter your email" autocomplete="email">
+          </div>
+          <div class="login-field">
+            <label>Passcode</label>
+            <input type="password" id="hero-pass" placeholder="Enter your password" autocomplete="current-password">
+          </div>
+          <div class="login-remember">
+            <input type="checkbox" id="hero-remember">
+            <label for="hero-remember">Remember my Online ID</label>
+          </div>
+          <button class="btn btn-red btn-full" onclick="heroLogin()">Sign In</button>
+          <div class="login-links">
+            <a href="#">Forgot Online ID?</a>
+            <a href="#">Forgot Passcode?</a>
+          </div>
+        </div>
+        <div class="hero-login-foot">
+          <p>Not yet enrolled in Online Banking?</p>
+          <a href="#" class="btn btn-outline-blue btn-sm" style="display:inline-flex;">Enroll Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUICK LINKS ─────────────────────────────────────────── -->
+<div class="quick-band">
+  <div class="container">
+    <div class="quick-band-inner">
+      <div class="quick-item"><div class="quick-icon">📱</div><div class="quick-label">Mobile Banking</div><div class="quick-sub">Manage anywhere</div></div>
+      <div class="quick-item"><div class="quick-icon">📍</div><div class="quick-label">Find a Location</div><div class="quick-sub">ATMs & branches</div></div>
+      <div class="quick-item"><div class="quick-icon">💬</div><div class="quick-label">Contact Us</div><div class="quick-sub">24/7 support</div></div>
+      <div class="quick-item"><div class="quick-icon">🔒</div><div class="quick-label">Security Center</div><div class="quick-sub">Stay protected</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PRODUCTS ───────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Banking made for your life</h2>
+    <p class="section-sub">Find the right accounts and services to fit your needs.</p>
+    <div class="products-grid">
+      <div class="product-card anim-fade-up">
+        <div class="product-icon">🏦</div>
+        <div class="product-name">Checking Accounts</div>
+        <div class="product-desc">Manage everyday spending with a checking account that works for you. Get access to thousands of ATMs and financial centers nationwide.</div>
+        <a href="#" class="product-link">Compare checking accounts →</a>
+      </div>
+      <div class="product-card anim-fade-up anim-delay-1">
+        <div class="product-icon">💰</div>
+        <div class="product-name">Savings Accounts &amp; CDs</div>
+        <div class="product-desc">Grow your savings with competitive interest rates. From high-yield savings to certificates of deposit, we have options for every goal.</div>
+        <a href="#" class="product-link">Explore savings options →</a>
+      </div>
+      <div class="product-card anim-fade-up anim-delay-2">
+        <div class="product-icon">💳</div>
+        <div class="product-name">Credit Cards</div>
+        <div class="product-desc">Earn cash back, travel rewards, and more. Find a card that fits your lifestyle and gives you the benefits you want most.</div>
+        <a href="#" class="product-link">Browse credit cards →</a>
+      </div>
+      <div class="product-card anim-fade-up anim-delay-3">
+        <div class="product-icon">🏠</div>
+        <div class="product-name">Home Loans</div>
+        <div class="product-desc">Purchase a new home or refinance your existing mortgage with competitive rates and expert guidance every step of the way.</div>
+        <a href="#" class="product-link">Get started with home loans →</a>
+      </div>
+      <div class="product-card anim-fade-up anim-delay-4">
+        <div class="product-icon">🚗</div>
+        <div class="product-name">Auto Loans</div>
+        <div class="product-desc">Finance your new or used vehicle with a competitive auto loan. Get pre-qualified and drive away with confidence.</div>
+        <a href="#" class="product-link">Check auto loan rates →</a>
+      </div>
+      <div class="product-card anim-fade-up anim-delay-5">
+        <div class="product-icon">📈</div>
+        <div class="product-name">Investing &amp; Merrill</div>
+        <div class="product-desc">Plan for your future with investment accounts, IRAs, and personalized financial advice from Merrill Edge®.</div>
+        <a href="#" class="product-link">Start investing →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BENEFITS ───────────────────────────────────────────── -->
+<section class="rates-banner">
+  <div class="container">
+    <div class="rates-inner">
+      <div>
+        <h2 class="rates-title">Why Bank of America?</h2>
+        <p class="rates-sub">Join millions of customers who trust us with their financial lives every day.</p>
+        <ul class="benefits-list">
+          <li><span class="check-icon">✓</span> Access to 15,000+ ATMs and 3,900 financial centers nationwide</li>
+          <li><span class="check-icon">✓</span> Award-winning mobile banking app with Zelle® transfers</li>
+          <li><span class="check-icon">✓</span> FDIC-insured deposits up to $250,000 per depositor</li>
+          <li><span class="check-icon">✓</span> 24/7 customer service and fraud protection</li>
+          <li><span class="check-icon">✓</span> Better Money Habits® financial education tools</li>
+          <li><span class="check-icon">✓</span> Preferred Rewards program with exclusive member benefits</li>
+        </ul>
+      </div>
+      <div class="stats-box">
+        <div class="stat-num">67M+</div><div class="stat-label">Verified clients worldwide</div>
+        <div class="stat-num">$250K</div><div class="stat-label">FDIC insured per depositor</div>
+        <div class="stat-num">15K+</div><div class="stat-label">ATMs nationwide</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── NEWS ───────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Your news &amp; information</h2>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-thumb news-thumb-1">🔒</div>
+        <div class="news-body">
+          <span class="news-tag">Security</span>
+          <div class="news-title">Level up your account security with our Security Center</div>
+          <div class="news-desc">Watch your security meter rise as you take action to help protect against fraud and identity theft.</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-thumb news-thumb-2">📱</div>
+        <div class="news-body">
+          <span class="news-tag">Mobile Banking</span>
+          <div class="news-title">Convenient banking at your fingertips with our Mobile app</div>
+          <div class="news-desc">Deposit checks, transfer money, pay bills and more — all from your smartphone, 24/7.</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-thumb news-thumb-3">💡</div>
+        <div class="news-body">
+          <span class="news-tag">Financial Tips</span>
+          <div class="news-title">Build better money habits with our free education tools</div>
+          <div class="news-desc">Explore articles, videos and tools designed to help you reach your financial goals faster.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONNECT ─────────────────────────────────────────────── -->
+<section class="connect-strip">
+  <div class="container">
+    <div class="connect-grid">
+      <div><div class="connect-icon">📅</div><div class="connect-title">Schedule an Appointment</div><div class="connect-sub">Meet with a specialist at your local branch</div><a href="#" class="connect-link">Book now</a></div>
+      <div><div class="connect-icon">📍</div><div class="connect-title">Find a Location</div><div class="connect-sub">Locate ATMs and financial centers near you</div><a href="#" class="connect-link">Find locations</a></div>
+      <div><div class="connect-icon">📞</div><div class="connect-title">Contact Us</div><div class="connect-sub">Talk to a customer service representative</div><a href="#" class="connect-link">Get in touch</a></div>
+      <div><div class="connect-icon">❓</div><div class="connect-title">Help Center</div><div class="connect-sub">Find answers to your banking questions</div><a href="#" class="connect-link">Browse help</a></div>
+    </div>
+  </div>
+</section>
+
+<div id="page-footer"></div>
+
+<script src="js/shared.js"></script>
+<script>
+  document.getElementById('page-header').innerHTML = renderPublicHeader();
+  document.getElementById('page-footer').innerHTML = renderFooter();
+
+  // Redirect if already logged in
+  const u = Auth.user();
+  if (u) {
+    document.querySelector('.hero-login').innerHTML = `
+      <div class="hero-login-head">Welcome back, ${u.name.split(' ')[0]}!</div>
+      <div class="hero-login-body" style="text-align:center;padding:30px 24px;">
+        <div style="font-size:48px;margin-bottom:14px;">👋</div>
+        <p style="margin-bottom:18px;color:#555;">You are currently signed in.</p>
+        <a href="${u.role==='admin'?'admin-dashboard.html':'dashboard.html'}" class="btn btn-red btn-full">Go to My Dashboard</a>
+        <button onclick="handleLogout()" style="margin-top:10px;background:none;border:none;color:var(--link-blue);cursor:pointer;font-size:13px;width:100%;">Sign Out</button>
+      </div>`;
+  }
+
+  function heroLogin() {
+    const email = document.getElementById('hero-email').value.trim();
+    const pass  = document.getElementById('hero-pass').value;
+    const errEl = document.getElementById('hero-error');
+    errEl.style.display = 'none';
+
+    const user = DB.getUserByEmail(email);
+    if (!user || user.password !== pass) {
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!user.isActive && user.role !== 'admin') {
+      errEl.textContent = 'Your account has been deactivated. Please contact support.';
+      errEl.style.display = 'block';
+      return;
+    }
+    Auth.login(user);
+    window.location.href = user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
+  }
+
+  // Enter key login
+  ['hero-email','hero-pass'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') heroLogin(); });
+  });
+</script>
+</body>
+</html>
